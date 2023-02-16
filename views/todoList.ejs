@@ -99,7 +99,6 @@
             })
             $("button.deleteBtn").click(function () {
                 const $rowdata = $(this).parent().parent()
-                // $rowdata.find("td.showTodo").css("display", "none")
                 let idx = $(this).data().no
 
                 let urlStr = `/todo/delete?no=${idx}`
