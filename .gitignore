@@ -108,3 +108,5 @@ dist
 # etc
 info.json
 index_ex01.js
+index_ex02.js
+/public/images
