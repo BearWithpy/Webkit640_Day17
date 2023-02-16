@@ -5,6 +5,16 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Todo List</title>
+        <script src="http://code.jquery.com/jquery.js"></script>
+        <style>
+            td.showInput {
+                display: none;
+            }
+
+            td.done {
+                text-decoration: line-through;
+            }
+        </style>
     </head>
     <body>
         <h1>TODO List</h1>
@@ -23,16 +33,101 @@
                 <th width="10%">수정</th>
                 <th width="10%">삭제</th>
             </tr>
-            <% todoList.forEach((data)=>{%>
+            <% todoList.forEach((data, idx)=>{ if (!data.isDeleted) { %>
             <tr style="text-align: center">
                 <td><%=data.no %></td>
-                <td><input type="checkbox" name="" id="" /></td>
-                <td style="text-align: left"><%=data.task %></td>
-                <td><button>수정</button></td>
-                <td><button>삭제</button></td>
+
+                <% if (!data.isDone) {%>
+                <td>
+                    <input
+                        type="checkbox"
+                        name=""
+                        id=""
+                        data-no="<%=data.no %>"
+                    />
+                </td>
+                <td class="showTodo" style="text-align: left">
+                    <%=data.task %>
+                </td>
+                <% } else {%>
+                <td>
+                    <input
+                        type="checkbox"
+                        name=""
+                        checked
+                        data-no="<%=data.no %>"
+                    />
+                </td>
+                <td class="done" style="text-align: left"><%=data.task %></td>
+                <%}%>
+
+                <td class="showInput" style="text-align: left">
+                    <input value="<%=data.task %>" />
+                </td>
+                <td>
+                    <button class="modifyBtn" data-no="<%=data.no %>">
+                        수정
+                    </button>
+                </td>
+                <td>
+                    <button class="deleteBtn" data-no="<%=data.no %>">
+                        삭제
+                    </button>
+                </td>
             </tr>
-            <% }) %>
+            <% } }) %>
         </table>
         <a href="/">back</a>
+
+        <script>
+            $("input[type=checkbox]").click(function () {
+                const $rowdata = $(this).parent().parent()
+
+                if ($(this).prop("checked")) {
+                    let idx = $(this).data().no
+                    let val = true
+
+                    let urlStr = `/todo/complete?no=${idx}&isDone=${val}`
+                    location.assign(urlStr)
+                } else {
+                    let val = false
+                    let idx = $(this).data().no
+
+                    let urlStr = `/todo/complete?no=${idx}&isDone=${val}`
+                    location.assign(urlStr)
+                }
+            })
+            $("button.deleteBtn").click(function () {
+                const $rowdata = $(this).parent().parent()
+                // $rowdata.find("td.showTodo").css("display", "none")
+                let idx = $(this).data().no
+
+                let urlStr = `/todo/delete?no=${idx}`
+                location.assign(urlStr)
+            })
+            $("button.modifyBtn").click(function () {
+                const $rowdata = $(this).parent().parent()
+                if ($rowdata.find("td.showTodo").css("display") !== "none") {
+                    $rowdata.find("td.showTodo").hide()
+                    $rowdata.find("td.showInput").show()
+                    $(this).text("완료")
+                } else {
+                    // server로 변경 내용과 index를 보냄
+                    // 페이지가 변경되면서 query string을 파라미터로 전송
+
+                    let task = $rowdata.find("td.showInput>input").val()
+                    let idx = $(this).data().no
+
+                    let urlStr = `/todo/update?no=${idx}&task=${task}`
+
+                    location.assign(urlStr)
+
+                    // 주소 바뀌면 이하는 의미 없음...ㅋㅋ
+                    // $rowdata.find("td.showTodo").show()
+                    // $rowdata.find("td.showInput").hide()
+                    // $(this).text("수정")
+                }
+            })
+        </script>
     </body>
 </html>
