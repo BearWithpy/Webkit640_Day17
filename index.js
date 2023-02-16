@@ -22,6 +22,9 @@ app.set("view engine", "ejs")
 app.set("port", process.env.PORT || 3001)
 app.use(cors())
 
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
 app.get("/", (req, res) => {
     res.writeHead(200, { "Content-type": "text/html; charset=utf8" })
     res.write("<h1>This is my server - JS</h1>")
@@ -29,7 +32,6 @@ app.get("/", (req, res) => {
 })
 
 const cryptoList = jsonInfo.cryptoList
-const todoList = jsonInfo.todoList
 
 app.get("/crypto", (req, res) => {
     req.app.render("crypto", { cryptoList }, (err, data) => {
@@ -40,6 +42,8 @@ app.get("/crypto", (req, res) => {
     })
 })
 
+let todoList = jsonInfo.todoList
+
 app.get("/todo", (req, res) => {
     req.app.render("todoList", { todoList }, (err, data) => {
         if (err) {
@@ -47,6 +51,20 @@ app.get("/todo", (req, res) => {
         }
         res.end(data)
     })
+})
+
+app.post("/todo", (req, res) => {
+    const { newTodo } = req.body
+
+    let todo = {
+        no: todoList.length + 1,
+        task: newTodo,
+        isDone: false,
+        isDeleted: false,
+    }
+
+    todoList = [...todoList, todo]
+    res.redirect("/todo")
 })
 
 const server = http.createServer(app)

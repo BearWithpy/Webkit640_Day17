@@ -7,10 +7,31 @@
         <title>Todo List</title>
     </head>
     <body>
-        <ol>
+        <h1>TODO List</h1>
+        <div>
+            <!--  비워 놓으면 같은 페이지로 이동함 -->
+            <form action="" method="post">
+                <input type="text" placeholder="Add Todo" name="newTodo" />
+                <input type="submit" value="save" name="" />
+            </form>
+        </div>
+        <table width="100%">
+            <tr>
+                <th width="10%">No.</th>
+                <th width="5%"></th>
+                <th width="65%">TODO</th>
+                <th width="10%">수정</th>
+                <th width="10%">삭제</th>
+            </tr>
             <% todoList.forEach((data)=>{%>
-            <li><%=data.task %> | <%=data.isDeleted %> | <%=data.isDone %></li>
+            <tr style="text-align: center">
+                <td><%=data.no %></td>
+                <td><input type="checkbox" name="" id="" /></td>
+                <td style="text-align: left"><%=data.task %></td>
+                <td><button>수정</button></td>
+                <td><button>삭제</button></td>
+            </tr>
             <% }) %>
-        </ol>
+        </table>
     </body>
 </html>
