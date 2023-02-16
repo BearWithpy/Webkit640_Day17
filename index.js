@@ -82,7 +82,7 @@ app.get("/todo/delete", (req, res) => {
 
 app.get("/todo/complete", (req, res) => {
     const { no, isDone } = req.query
-    console.log(typeof isDone)
+
     if (isDone === "true") {
         todoList[no - 1].isDone = true
     } else {
